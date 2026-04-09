@@ -7,7 +7,177 @@
   function gtag(){ dataLayer.push(arguments); }
   gtag('js', new Date());
   gtag('config', 'G-P3LH62CZR5');
+</script><!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fiat Empire — Idle Game</title>
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P3LH62CZR5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-P3LH62CZR5');
 </script>
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;
+      min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;padding:24px;text-align:center}
+    h1{font-size:1.8rem;color:#fbbf24;margin-bottom:4px}
+    .sub{font-size:.85rem;color:#475569;margin-bottom:28px}
+    .display{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:16px;
+      padding:24px 40px;margin-bottom:24px}
+    .amount{font-size:2.4rem;font-weight:700;color:#fbbf24}
+    .cname{font-size:.85rem;color:#64748b;margin-top:4px}
+    .pps{font-size:.85rem;color:#4ade80;margin-top:6px}
+    .clickbtn{background:#1a2e1a;border:2px solid #22c55e;border-radius:50%;
+      width:110px;height:110px;font-size:2.4rem;cursor:pointer;margin-bottom:28px;
+      transition:transform .08s}
+    .clickbtn:active{transform:scale(.91)}
+    .upgrades{width:100%;max-width:360px}
+    .sect{font-size:.75rem;color:#475569;text-transform:uppercase;
+      letter-spacing:.1em;margin-bottom:10px}
+    .card{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:10px;
+      padding:12px 14px;margin-bottom:8px;display:flex;
+      align-items:center;justify-content:space-between;gap:10px}
+    .bname{font-size:.88rem;color:#e2e8f0;font-weight:600}
+    .bdesc{font-size:.75rem;color:#64748b;margin-top:2px}
+    .bowned{font-size:.73rem;color:#475569;margin-top:3px}
+    .buybtn{background:#1e3a5f;border:1px solid #2563eb;border-radius:8px;
+      padding:8px 12px;color:#60a5fa;font-size:.8rem;font-weight:600;
+      cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s}
+    .buybtn:hover:not(:disabled){background:#1d4ed8;color:#fff}
+    .buybtn:disabled{opacity:.35;cursor:not-allowed;background:#1a1a2e;
+      border-color:#334155;color:#475569}
+    .foot{font-size:.72rem;color:#1e293b;margin-top:28px}
+    .pop{position:fixed;pointer-events:none;font-size:.95rem;color:#fbbf24;
+      font-weight:700;animation:up .75s ease-out forwards}
+    @keyframes up{0%{opacity:1;transform:translateY(0)}
+      100%{opacity:0;transform:translateY(-48px)}}
+  </style>
+</head>
+<body>
+
+<h1>💵 Fiat Empire</h1>
+<p class="sub">Stampa. Accumula. Espandi.</p>
+
+<div class="display">
+  <div class="amount" id="amt">0 FB</div>
+  <div class="cname">FiatBux</div>
+  <div class="pps" id="pps">+0.0 FB/sec</div>
+</div>
+
+<button class="clickbtn" onclick="doClick(event)">💵</button>
+
+<div class="upgrades">
+  <p class="sect">Espandi il tuo impero</p>
+
+  <div class="card">
+    <div>
+      <div class="bname">🖨️ Stampante Domestica</div>
+      <div class="bdesc">+0.1 FB/sec</div>
+      <div class="bowned" id="o-printer">Possedute: 0</div>
+    </div>
+    <button class="buybtn" id="b-printer" onclick="buy('printer')">
+      Compra<br><span id="c-printer">10 FB</span>
+    </button>
+  </div>
+
+  <div class="card">
+    <div>
+      <div class="bname">🏢 Ufficio Stampa</div>
+      <div class="bdesc">+1 FB/sec</div>
+      <div class="bowned" id="o-office">Possedute: 0</div>
+    </div>
+    <button class="buybtn" id="b-office" onclick="buy('office')">
+      Compra<br><span id="c-office">100 FB</span>
+    </button>
+  </div>
+
+  <div class="card">
+    <div>
+      <div class="bname">🏦 Banca Centrale</div>
+      <div class="bdesc">+10 FB/sec</div>
+      <div class="bowned" id="o-bank">Possedute: 0</div>
+    </div>
+    <button class="buybtn" id="b-bank" onclick="buy('bank')">
+      Compra<br><span id="c-bank">1.000 FB</span>
+    </button>
+  </div>
+</div>
+
+<p class="foot">Simulazione — nessuna valuta reale coinvolta.</p>
+
+<script>
+  // ── Dati edifici
+  const B = {
+    printer: { base: 10,   rate: 0.1,  mult: 1.15 },
+    office:  { base: 100,  rate: 1,    mult: 1.15 },
+    bank:    { base: 1000, rate: 10,   mult: 1.15 }
+  };
+
+  // ── Stato (caricato da localStorage)
+  let s = { fb: 0, b: { printer:0, office:0, bank:0 } };
+  try {
+    const sv = localStorage.getItem('fe_v1');
+    if (sv) s = JSON.parse(sv);
+  } catch(e) {}
+
+  // ── Funzioni
+  const cost = id => Math.floor(B[id].base * Math.pow(B[id].mult, s.b[id]));
+  const pps  = ()  => Object.keys(B).reduce((t,id) => t + s.b[id]*B[id].rate, 0);
+  const save = ()  => localStorage.setItem('fe_v1', JSON.stringify(s));
+
+  function fmt(n) {
+    if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
+    if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+    if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+    return Math.floor(n).toString();
+  }
+
+  function ui() {
+    const p = pps();
+    document.getElementById('amt').textContent = fmt(s.fb)+' FB';
+    document.getElementById('pps').textContent = '+'+p.toFixed(1)+' FB/sec';
+    ['printer','office','bank'].forEach(id => {
+      const c = cost(id);
+      document.getElementById('o-'+id).textContent = 'Possedute: '+s.b[id];
+      document.getElementById('c-'+id).textContent = fmt(c)+' FB';
+      document.getElementById('b-'+id).disabled = s.fb < c;
+    });
+  }
+
+  function doClick(e) {
+    s.fb += 1; save(); ui();
+    const el = document.createElement('div');
+    el.className = 'pop';
+    el.textContent = '+1 FB';
+    el.style.cssText = 'left:'+(e.clientX-16)+'px;top:'+(e.clientY-16)+'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 750);
+  }
+
+  function buy(id) {
+    const c = cost(id);
+    if (s.fb >= c) { s.fb -= c; s.b[id]++; save(); ui(); }
+  }
+
+  // ── Loop automatico (10 tick/sec)
+  setInterval(() => { s.fb += pps()/10; ui(); }, 100);
+
+  // ── Salvataggio periodico
+  setInterval(save, 5000);
+
+  ui();
+</script>
+</body>
+</html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
