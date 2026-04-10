@@ -156,7 +156,27 @@
     const c = cost(id);
     if (s.fb >= c) { s.fb -= c; s.b[id]++; save(); ui(); }
   }
+const now       = Date.now();
+const lastSeen  = parseInt(localStorage.getItem('fe_last') || String(now));
+const secondsAway = isNaN(lastSeen) ? 0 : Math.min((now - lastSeen) / 1000, 28800);
+const production  = pps(); // ora pps() è già definita → nessun errore
+const offlineGain = secondsAway * production;
 
+  // Aggiungi solo se il guadagno è un numero valido e significativo
+  if (offlineGain > 0.5 && isFinite(offlineGain)) {
+    s.fb += offlineGain;
+    save();
+    setTimeout(() => {
+      const mins   = Math.floor(secondsAway / 60);
+      const earned = fmt(offlineGain); // ora fmt() è già definita → nessun errore
+      alert(`Bentornato! 🏭\nNei tuoi ${mins} minuti di assenza il tuo impero ha prodotto ${earned} FB.`);
+    }, 500);
+  }
+  
+  // Salva il timestamp ogni volta che l'utente chiude/lascia la pagina
+  window.addEventListener('beforeunload', () => {
+    localStorage.setItem('fe_last', String(Date.now()));
+  });
   // ── Loop automatico (10 tick/sec)
   setInterval(() => { s.fb += pps()/10; ui(); }, 100);
 
