@@ -115,27 +115,6 @@
 
   // ── Stato (caricato da localStorage)
   let s = { fb: 0, b: { printer:0, office:0, bank:0 } };
-  // ── Offline progress ─────────────────────────────────
-// Calcola i FiatBux guadagnati mentre l'utente era via
-const now = Date.now();
-const lastSeen = parseInt(localStorage.getItem('fe_last') || now);
-const elapsed = Math.min((now - lastSeen) / 1000, 28800); // max 8 ore
-const offlineGain = elapsed * pps();
-
-if (offlineGain > 0.5) {
-  s.fb += offlineGain;
-  // Mostra notifica benvenuto
-  setTimeout(() => {
-    const mins = Math.floor(elapsed / 60);
-    const earned = fmt(offlineGain);
-    alert(`Bentornato! 🏭\nNei tuoi ${mins} minuti di assenza il tuo impero ha prodotto ${earned} FB.`);
-  }, 500);
-}
-
-// Salva timestamp ad ogni chiusura della pagina
-window.addEventListener('beforeunload', () => {
-  localStorage.setItem('fe_last', Date.now());
-});
   try {
     const sv = localStorage.getItem('fe_v1');
     if (sv) s = JSON.parse(sv);
