@@ -136,13 +136,13 @@
   const B = {
     printer: { base: 10,   rate: 0.1,  mult: 1.15 },
     office:  { base: 100,  rate: 1,    mult: 1.15 },
-    bank:    { base: 1000, rate: 10,   mult: 1.15 }
+    bank:    { base: 1000, rate: 10,   mult: 1.15 },
     fund:  { base: 10000,   rate: 100,   mult: 1.15 },
     qe:    { base: 100000,  rate: 1000,  mult: 1.15 }
   };
 
   // ── Stato (caricato da localStorage)
-  let s = { fb: 0, b: { printer:0, office:0, bank:0, fund:0, qe:0 } };
+  let s = { fb: 0, b: { printer:0, office:0, bank:0, fund:0, qe:0 }, prestige: 0 };
   try {
     const sv = localStorage.getItem('fe_v1');
     if (sv) s = JSON.parse(sv);
@@ -164,12 +164,13 @@
     const p = pps();
     document.getElementById('amt').textContent = fmt(s.fb)+' FB';
     document.getElementById('pps').textContent = '+'+p.toFixed(1)+' FB/sec';
-    ['printer','office','bank','fund','qe'].forEach(id => {
-      const c = cost(id);
-      document.getElementById('o-'+id).textContent = 'Possedute: '+s.b[id];
-      document.getElementById('c-'+id).textContent = fmt(c)+' FB';
-      document.getElementById('b-'+id).disabled = s.fb < c;
-    });
+
+  ['printer','office','bank','fund','qe'].forEach(id => {   // ← fund e qe aggiunti
+    const c = cost(id);
+    document.getElementById('o-'+id).textContent = 'Possedute: '+s.b[id];
+    document.getElementById('c-'+id).textContent = fmt(c)+' FB';
+    document.getElementById('b-'+id).disabled = s.fb < c;
+  });
   }
 
   function doClick(e) {
