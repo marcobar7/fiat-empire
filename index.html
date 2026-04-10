@@ -162,51 +162,92 @@
     const c = cost(id);
     if (s.fb >= c) { s.fb -= c; s.b[id]++; save(); ui(); }
   }
-const now       = Date.now();
-const lastSeen  = parseInt(localStorage.getItem('fe_last') || String(now));
-const secondsAway = isNaN(lastSeen) ? 0 : Math.min((now - lastSeen) / 1000, 28800);
-const production  = pps(); // ora pps() è già definita → nessun errore
-const offlineGain = secondsAway * production;
 
-  // Aggiungi solo se il guadagno è un numero valido e significativo
-  if (offlineGain > 0.5 && isFinite(offlineGain)) {
-    s.fb += offlineGain;
-    save();
-    setTimeout(() => {
-      const mins   = Math.floor(secondsAway / 60);
-      const earned = fmt(offlineGain); // ora fmt() è già definita → nessun errore
-      alert(`Bentornato! 🏭\nNei tuoi ${mins} minuti di assenza il tuo impero ha prodotto ${earned} FB.`);
-    }, 500);
-  }
-  
-  // Salva il timestamp ogni volta che l'utente chiude/lascia la pagina
-  
-function saveTimestamp() {
-  localStorage.setItem('fe_last', String(Date.now()));
-  save(); // salva anche il punteggio in quel momento
+// ── Helpers ──────────────────────────────────────────────────
+function saveAll() {
+  // Salva punteggio E timestamp insieme in un'unica scrittura
+  s.ts = Date.now();
+  try {
+    localStorage.setItem('fe_v1', JSON.stringify(s));
+  } catch(e) {}
 }
 
-window.addEventListener('beforeunload',   saveTimestamp); // Chrome/Firefox PC
-window.addEventListener('pagehide',       saveTimestamp); // iOS Safari (pagina nascosta)
-window.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') saveTimestamp(); // iOS schermo bloccato
-});
-  // ── Loop automatico (10 tick/sec)
-  
+
+// ── Carica il salvataggio e applica offline progress ─────────
+(function loadAndApplyOffline() {
+  try {
+    const raw = localStorage.getItem('fe_v1');
+    if (!raw) return;
+
+    const saved = JSON.parse(raw);
+
+    // Valida che i dati salvati siano un oggetto usabile
+    if (typeof saved !== 'object' || saved === null) return;
+
+    // Ripristina lo stato
+    s.fb = isFinite(saved.fb) ? saved.fb : 0;
+    if (saved.b) {
+      Object.keys(s.b).forEach(k => {
+        if (typeof saved.b[k] === 'number' && isFinite(saved.b[k])) {
+          s.b[k] = saved.b[k];
+        }
+      });
+    }
+    if (typeof saved.prestige === 'number') s.prestige = saved.prestige || 0;
+
+    // Calcola offline progress dal timestamp salvato dentro lo stato
+    if (saved.ts && isFinite(saved.ts)) {
+      const secondsAway = Math.min((Date.now() - saved.ts) / 1000, 28800);
+      const gain        = secondsAway * pps();
+
+      if (gain > 0.5 && isFinite(gain)) {
+        s.fb += gain;
+        setTimeout(() => {
+          const mins   = Math.floor(secondsAway / 60);
+          const secs   = Math.floor(secondsAway % 60);
+          const tempo  = mins > 0 ? `${mins} min ${secs} sec` : `${secs} secondi`;
+          alert(`Bentornato! 🏭\nIn ${tempo} di assenza hai prodotto ${fmt(gain)} FB.`);
+        }, 600);
+      }
+    }
+  } catch(e) {
+    // Se il salvataggio è corrotto, riparte da zero senza crashare
+    s = { fb: 0, b: { printer:0, office:0, bank:0, fund:0, qe:0 }, prestige: 0 };
+  }
+})();
+
+
+// ── Loop automatico — usa tempo reale (robusto su iOS) ───────
 let lastTick = Date.now();
 
 setInterval(() => {
-  const now        = Date.now();
-  const delta      = Math.min((now - lastTick) / 1000, 60); // secondi reali trascorsi, max 60
-  lastTick         = now;
-  s.fb            += pps() * delta;
+  const now   = Date.now();
+  const delta = Math.min((now - lastTick) / 1000, 30); // max 30 sec per tick
+  lastTick    = now;
+  if (isFinite(delta) && delta > 0) {
+    s.fb += pps() * delta;
+  }
   ui();
-}, 200); // 200ms invece di 100ms → più leggero su mobile
+}, 200);
 
-  // ── Salvataggio periodico
-  setInterval(save, 5000);
 
-  ui();
-</script>
+// ── Salvataggio periodico automatico ogni 5 secondi ──────────
+// Questo è il cuore del fix: non dipendiamo più dagli eventi
+// di chiusura pagina — il timestamp viene aggiornato costantemente
+setInterval(saveAll, 5000);
+
+
+// ── Backup con eventi pagina (funziona dove supportati) ──────
+['beforeunload', 'pagehide', 'freeze'].forEach(ev => {
+  window.addEventListener(ev, saveAll, { passive: true });
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') saveAll();
+});
+
+
+// ── Prima chiamata UI ─────────────────────────────────────────
+ui();
+</script>  
 </body>
 </html>
