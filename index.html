@@ -38,6 +38,18 @@
     }
     h1 { font-size: 1.8rem; color: #fbbf24; margin-bottom: 4px; }
     .sub { font-size: .85rem; color: #475569; margin-bottom: 28px; }
+    .tutorial {
+      font-size: .8rem;
+      color: #475569;
+      margin-bottom: 20px;
+      max-width: 300px;
+      line-height: 1.5;
+    }
+    .hint {
+      font-size: .75rem;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
     .display {
       background: #1a1a2e;
       border: 1px solid #2d2d4e;
@@ -125,13 +137,15 @@
 
 <h1>💵 Fiat Empire</h1>
 <p class="sub">Stampa. Accumula. Espandi.</p>
+<p class="tutorial">👆 Clicca il pulsante per stampare FiatBux.<br>Poi compra edifici per automatizzare la produzione.</p>
 
-<div class="display">
+  <div class="display">
   <div class="amount" id="amt">0 FB</div>
   <div class="cname">FiatBux</div>
   <div class="pps"   id="pps">+0.0 FB/sec</div>
 </div>
-
+  
+<p class="hint" id="hint">🎯 Obiettivo: raggiungi 10 FB per la prima Stampante</p>
 <button class="clickbtn" onclick="doClick(event)">💵</button>
 
 <div class="upgrades">
@@ -314,6 +328,7 @@ function buy(id) {
   if (s.fb >= c) {
     s.fb = safeNum(s.fb) - c;
     s.b[id] = safeNum(s.b[id]) + 1;
+    document.getElementById('hint')?.remove(); 
     saveAll(); ui();
   }
 }
