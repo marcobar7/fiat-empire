@@ -152,9 +152,10 @@
   } catch(e) {}
 
   // ── Funzioni
-  const cost = id => Math.floor(B[id].base * Math.pow(B[id].mult, s.b[id]));
-  const pps  = ()  => Object.keys(B).reduce((t,id) => t + s.b[id]*B[id].rate, 0);
-  const save = ()  => localStorage.setItem('fe_v1', JSON.stringify(s));
+
+  const cost  = id => Math.floor(B[id].base * Math.pow(B[id].mult, (s.b[id]||0)));
+  const pps   = ()  => Object.keys(B).reduce((t,id) => t + (s.b[id]||0) * B[id].rate, 0);
+  const save  = ()  => { s.ts = Date.now(); try { localStorage.setItem('fe_v1', JSON.stringify(s)); } catch(e){} };
 
   function fmt(n) {
     if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
@@ -165,15 +166,26 @@
 
   function ui() {
     const p = pps();
-    document.getElementById('amt').textContent = fmt(s.fb)+' FB';
-    document.getElementById('pps').textContent = '+'+p.toFixed(1)+' FB/sec';
-
-  ['printer','office','bank','fund','qe'].forEach(id => {   // ← fund e qe aggiunti
-    const c = cost(id);
-    document.getElementById('o-'+id).textContent = 'Possedute: '+s.b[id];
-    document.getElementById('c-'+id).textContent = fmt(c)+' FB';
-    document.getElementById('b-'+id).disabled = s.fb < c;
-  });
+    const safeFb = isFinite(s.fb) ? s.fb : 0;   // blocca NaN nel display
+    if (!isFinite(s.fb)) s.fb = 0;               // corregge s.fb se NaN
+  
+    const amtEl = document.getElementById('amt');
+    const ppsEl = document.getElementById('pps');
+    if (amtEl) amtEl.textContent = fmt(safeFb) + ' FB';
+    if (ppsEl) ppsEl.textContent = '+' + p.toFixed(1) + ' FB/sec';
+  
+    ['printer','office','bank','fund','qe'].forEach(id => {
+      const oEl = document.getElementById('o-' + id);
+      const cEl = document.getElementById('c-' + id);
+      const bEl = document.getElementById('b-' + id);
+      if (!oEl || !cEl || !bEl) return;   // salta se l'elemento HTML non esiste
+      const c = cost(id);
+      oEl.textContent = 'Possedute: ' + (s.b[id]||0);
+      cEl.textContent = fmt(c) + ' FB';
+      bEl.disabled = safeFb < c;
+    });
+  
+    document.title = fmt(safeFb) + ' FB — Fiat Empire';
   }
 
   function doClick(e) {
@@ -246,20 +258,22 @@ function saveAll() {
 
 
 // ── Loop automatico — usa tempo reale (robusto su iOS) ───────
+
 let lastTick = Date.now();
 
 setInterval(() => {
   const now   = Date.now();
-  const delta = Math.min((now - lastTick) / 1000, 30); // max 30 sec per tick
+  const delta = Math.min((now - lastTick) / 1000, 30);
   lastTick    = now;
-  if (isFinite(delta) && delta > 0) {
-    s.fb += pps() * delta;
-  }
+  const gain  = pps() * delta;
+  if (isFinite(gain) && gain >= 0) s.fb += gain;  // non aggiunge mai NaN
   ui();
 }, 200);
-
-
-// ── Salvataggio periodico automatico ogni 5 secondi ──────────
+  
+  
+  
+  
+  ico ogni 5 secondi ──────────
 // Questo è il cuore del fix: non dipendiamo più dagli eventi
 // di chiusura pagina — il timestamp viene aggiornato costantemente
 setInterval(saveAll, 5000);
