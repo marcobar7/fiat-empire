@@ -16,48 +16,106 @@
   });
 </script>
 
+
   <style>
     html { height: -webkit-fill-available; }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;
-      min-height:100vh;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;padding:24px;text-align:center;min-height: 100vh;
-    min-height: -webkit-fill-available;  ← corregge altezza su Safari iOS
-  }
-    h1{font-size:1.8rem;color:#fbbf24;margin-bottom:4px}
-    .sub{font-size:.85rem;color:#475569;margin-bottom:28px}
-    .display{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:16px;
-      padding:24px 40px;margin-bottom:24px}
-    .amount{font-size:2.4rem;font-weight:700;color:#fbbf24}
-    .cname{font-size:.85rem;color:#64748b;margin-top:4px}
-    .pps{font-size:.85rem;color:#4ade80;margin-top:6px}
-    .clickbtn{background:#1a2e1a;border:2px solid #22c55e;border-radius:50%;
-      width:110px;height:110px;font-size:2.4rem;cursor:pointer;margin-bottom:28px;
-      transition:transform .08;stouch-action: manipulation;   ← blocca zoom su doppio tap iOS
-    -webkit-tap-highlight-color: transparent; ← rimuove flash grigio al tap
-    user-select: none;            ← evita selezione testo accidentale
-  }
-    .clickbtn:active{transform:scale(.91)}
-    .upgrades{width:100%;max-width:360px}
-    .sect{font-size:.75rem;color:#475569;text-transform:uppercase;
-      letter-spacing:.1em;margin-bottom:10px}
-    .card{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:10px;
-      padding:12px 14px;margin-bottom:8px;display:flex;
-      align-items:center;justify-content:space-between;gap:10px}
-    .bname{font-size:.88rem;color:#e2e8f0;font-weight:600}
-    .bdesc{font-size:.75rem;color:#64748b;margin-top:2px}
-    .bowned{font-size:.73rem;color:#475569;margin-top:3px}
-    .buybtn{background:#1e3a5f;border:1px solid #2563eb;border-radius:8px;
-      padding:8px 12px;color:#60a5fa;font-size:.8rem;font-weight:600;
-      cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s}
-    .buybtn:hover:not(:disabled){background:#1d4ed8;color:#fff}
-    .buybtn:disabled{opacity:.35;cursor:not-allowed;background:#1a1a2e;
-      border-color:#334155;color:#475569}
-    .foot{font-size:.72rem;color:#1e293b;margin-top:28px}
-    .pop{position:fixed;pointer-events:none;font-size:.95rem;color:#fbbf24;
-      font-weight:700;animation:up .75s ease-out forwards}
-    @keyframes up{0%{opacity:1;transform:translateY(0)}
-      100%{opacity:0;transform:translateY(-48px)}}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a0a0f;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    h1 { font-size: 1.8rem; color: #fbbf24; margin-bottom: 4px; }
+    .sub { font-size: .85rem; color: #475569; margin-bottom: 28px; }
+    .display {
+      background: #1a1a2e;
+      border: 1px solid #2d2d4e;
+      border-radius: 16px;
+      padding: 24px 40px;
+      margin-bottom: 24px;
+    }
+    .amount { font-size: 2.4rem; font-weight: 700; color: #fbbf24; }
+    .cname  { font-size: .85rem; color: #64748b; margin-top: 4px; }
+    .pps    { font-size: .85rem; color: #4ade80; margin-top: 6px; }
+    .clickbtn {
+      background: #1a2e1a;
+      border: 2px solid #22c55e;
+      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      font-size: 2.4rem;
+      cursor: pointer;
+      margin-bottom: 28px;
+      transition: transform .08s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .clickbtn:active { transform: scale(.91); }
+    .upgrades { width: 100%; max-width: 360px; }
+    .sect {
+      font-size: .75rem;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 10px;
+    }
+    .card {
+      background: #1a1a2e;
+      border: 1px solid #2d2d4e;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .bname  { font-size: .88rem; color: #e2e8f0; font-weight: 600; }
+    .bdesc  { font-size: .75rem; color: #64748b; margin-top: 2px; }
+    .bowned { font-size: .73rem; color: #475569; margin-top: 3px; }
+    .buybtn {
+      background: #1e3a5f;
+      border: 1px solid #2563eb;
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #60a5fa;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background .15s;
+    }
+    .buybtn:hover:not(:disabled) { background: #1d4ed8; color: #fff; }
+    .buybtn:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+      background: #1a1a2e;
+      border-color: #334155;
+      color: #475569;
+    }
+    .foot { font-size: .72rem; color: #1e293b; margin-top: 28px; }
+    .pop {
+      position: fixed;
+      pointer-events: none;
+      font-size: .95rem;
+      color: #fbbf24;
+      font-weight: 700;
+      animation: up .75s ease-out forwards;
+    }
+    @keyframes up {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-48px); }
+    }
   </style>
 </head>
 <body>
@@ -68,7 +126,7 @@
 <div class="display">
   <div class="amount" id="amt">0 FB</div>
   <div class="cname">FiatBux</div>
-  <div class="pps" id="pps">+0.0 FB/sec</div>
+  <div class="pps"   id="pps">+0.0 FB/sec</div>
 </div>
 
 <button class="clickbtn" onclick="doClick(event)">💵</button>
@@ -108,175 +166,169 @@
       Compra<br><span id="c-bank">1.000 FB</span>
     </button>
   </div>
-</div>
-<!-- Fondo Globale -->
-<div class="card">
-  <div>
-    <div class="bname">🌐 Fondo Globale</div>
-    <div class="bdesc">+100 FB/sec</div>
-    <div class="bowned" id="o-fund">Possedute: 0</div>
+
+  <div class="card">
+    <div>
+      <div class="bname">🌐 Fondo Globale</div>
+      <div class="bdesc">+100 FB/sec</div>
+      <div class="bowned" id="o-fund">Possedute: 0</div>
+    </div>
+    <button class="buybtn" id="b-fund" onclick="buy('fund')">
+      Compra<br><span id="c-fund">10.000 FB</span>
+    </button>
   </div>
-  <button class="buybtn" id="b-fund" onclick="buy('fund')">
-    Compra<br><span id="c-fund">10.000 FB</span>
-  </button>
+
+  <div class="card">
+    <div>
+      <div class="bname">🛸 Quantitative Easing</div>
+      <div class="bdesc">+1.000 FB/sec</div>
+      <div class="bowned" id="o-qe">Possedute: 0</div>
+    </div>
+    <button class="buybtn" id="b-qe" onclick="buy('qe')">
+      Compra<br><span id="c-qe">100.000 FB</span>
+    </button>
+  </div>
 </div>
 
-<!-- Quantitative Easing -->
-<div class="card">
-  <div>
-    <div class="bname">🛸 Quantitative Easing</div>
-    <div class="bdesc">+1.000 FB/sec</div>
-    <div class="bowned" id="o-qe">Possedute: 0</div>
-  </div>
-  <button class="buybtn" id="b-qe" onclick="buy('qe')">
-    Compra<br><span id="c-qe">100.000 FB</span>
-  </button>
-</div>
 <p class="foot">Simulazione — nessuna valuta reale coinvolta.</p>
 
 <script>
-  // ── Dati edifici
-  const B = {
-    printer: { base: 10,   rate: 0.1,  mult: 1.15 },
-    office:  { base: 100,  rate: 1,    mult: 1.15 },
-    bank:    { base: 1000, rate: 10,   mult: 1.15 },
-    fund:  { base: 10000,   rate: 100,   mult: 1.15 },
-    qe:    { base: 100000,  rate: 1000,  mult: 1.15 }
-  };
+// ── Stato di default ─────────────────────────────────────────
+const DEFAULT = () => ({
+  fb: 0,
+  b: { printer:0, office:0, bank:0, fund:0, qe:0 },
+  prestige: 0,
+  ts: Date.now()
+});
 
-  // ── Stato (caricato da localStorage)
-  let s = { fb: 0, b: { printer:0, office:0, bank:0, fund:0, qe:0 }, prestige: 0 };
-  try {
-    const sv = localStorage.getItem('fe_v1');
-    if (sv) s = JSON.parse(sv);
-  } catch(e) {}
+// ── Dati edifici ─────────────────────────────────────────────
+const B = {
+  printer: { base: 10,     rate: 0.1,   mult: 1.15 },
+  office:  { base: 100,    rate: 1,     mult: 1.15 },
+  bank:    { base: 1000,   rate: 10,    mult: 1.15 },
+  fund:    { base: 10000,  rate: 100,   mult: 1.15 },
+  qe:      { base: 100000, rate: 1000,  mult: 1.15 }
+};
+const IDS = Object.keys(B);
 
-  // ── Funzioni
+// ── Stato corrente ───────────────────────────────────────────
+let s = DEFAULT();
 
-  const cost  = id => Math.floor(B[id].base * Math.pow(B[id].mult, (s.b[id]||0)));
-  const pps   = ()  => Object.keys(B).reduce((t,id) => t + (s.b[id]||0) * B[id].rate, 0);
-  const save  = ()  => { s.ts = Date.now(); try { localStorage.setItem('fe_v1', JSON.stringify(s)); } catch(e){} };
+// ── Funzioni base ────────────────────────────────────────────
+const safeNum = v => (typeof v === 'number' && isFinite(v) && v >= 0) ? v : 0;
+const cost    = id => Math.floor(B[id].base * Math.pow(B[id].mult, safeNum(s.b[id])));
+const pps     = ()  => IDS.reduce((t, id) => t + safeNum(s.b[id]) * B[id].rate, 0);
 
-  function fmt(n) {
-    if (n >= 1e9) return (n/1e9).toFixed(1)+'B';
-    if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
-    if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
-    return Math.floor(n).toString();
-  }
-
-  function ui() {
-    const p = pps();
-    const safeFb = isFinite(s.fb) ? s.fb : 0;   // blocca NaN nel display
-    if (!isFinite(s.fb)) s.fb = 0;               // corregge s.fb se NaN
-  
-    const amtEl = document.getElementById('amt');
-    const ppsEl = document.getElementById('pps');
-    if (amtEl) amtEl.textContent = fmt(safeFb) + ' FB';
-    if (ppsEl) ppsEl.textContent = '+' + p.toFixed(1) + ' FB/sec';
-  
-    ['printer','office','bank','fund','qe'].forEach(id => {
-      const oEl = document.getElementById('o-' + id);
-      const cEl = document.getElementById('c-' + id);
-      const bEl = document.getElementById('b-' + id);
-      if (!oEl || !cEl || !bEl) return;   // salta se l'elemento HTML non esiste
-      const c = cost(id);
-      oEl.textContent = 'Possedute: ' + (s.b[id]||0);
-      cEl.textContent = fmt(c) + ' FB';
-      bEl.disabled = safeFb < c;
-    });
-  
-    document.title = fmt(safeFb) + ' FB — Fiat Empire';
-  }
-
-  function doClick(e) {
-    s.fb += 1; save(); ui();
-    const el = document.createElement('div');
-    el.className = 'pop';
-    el.textContent = '+1 FB';
-    el.style.cssText = 'left:'+(e.clientX-16)+'px;top:'+(e.clientY-16)+'px';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 750);
-  }
-
-  function buy(id) {
-    const c = cost(id);
-    if (s.fb >= c) { s.fb -= c; s.b[id]++; save(); ui(); }
-  }
-
-// ── Helpers ──────────────────────────────────────────────────
-function saveAll() {
-  // Salva punteggio E timestamp insieme in un'unica scrittura
-  s.ts = Date.now();
-  try {
-    localStorage.setItem('fe_v1', JSON.stringify(s));
-  } catch(e) {}
+function fmt(n) {
+  n = safeNum(n);
+  if (n >= 1e12) return (n/1e12).toFixed(1) + 'T';
+  if (n >= 1e9)  return (n/1e9).toFixed(1)  + 'B';
+  if (n >= 1e6)  return (n/1e6).toFixed(1)  + 'M';
+  if (n >= 1e3)  return (n/1e3).toFixed(1)  + 'K';
+  return Math.floor(n).toString();
 }
 
-
-// ── Carica il salvataggio e applica offline progress ─────────
-(function loadAndApplyOffline() {
+// ── Caricamento UNICO dal localStorage ───────────────────────
+// Un solo punto di carico, con validazione completa.
+// Nessun altro posto nel codice legge localStorage.
+function loadSave() {
   try {
     const raw = localStorage.getItem('fe_v1');
-    if (!raw) return;
+    if (!raw) return;                        // nessun salvataggio → default
+    const d = JSON.parse(raw);
+    if (!d || typeof d !== 'object') return; // JSON corrotto → default
 
-    const saved = JSON.parse(raw);
+    // Carica fb con validazione
+    s.fb = safeNum(d.fb);
 
-    // Valida che i dati salvati siano un oggetto usabile
-    if (typeof saved !== 'object' || saved === null) return;
-
-    // Ripristina lo stato
-    s.fb = isFinite(saved.fb) ? saved.fb : 0;
-    if (saved.b) {
-      Object.keys(s.b).forEach(k => {
-        if (typeof saved.b[k] === 'number' && isFinite(saved.b[k])) {
-          s.b[k] = saved.b[k];
-        }
+    // Carica edifici: solo valori numerici finiti, mai undefined
+    if (d.b && typeof d.b === 'object') {
+      IDS.forEach(k => {
+        s.b[k] = safeNum(d.b[k]);
       });
     }
-    if (typeof saved.prestige === 'number') s.prestige = saved.prestige || 0;
 
-    // Calcola offline progress dal timestamp salvato dentro lo stato
-    if (saved.ts && isFinite(saved.ts)) {
-      const secondsAway = Math.min((Date.now() - saved.ts) / 1000, 28800);
-      const gain        = secondsAway * pps();
+    // Carica prestige
+    s.prestige = safeNum(d.prestige);
 
-      if (gain > 0.5 && isFinite(gain)) {
+    // Offline progress: calcola solo se il timestamp è valido
+    if (d.ts && isFinite(d.ts) && d.ts > 0) {
+      const away = Math.min((Date.now() - d.ts) / 1000, 28800);
+      const gain = safeNum(away * pps());
+      if (gain > 0.5) {
         s.fb += gain;
         setTimeout(() => {
-          const mins   = Math.floor(secondsAway / 60);
-          const secs   = Math.floor(secondsAway % 60);
-          const tempo  = mins > 0 ? `${mins} min ${secs} sec` : `${secs} secondi`;
-          alert(`Bentornato! 🏭\nIn ${tempo} di assenza hai prodotto ${fmt(gain)} FB.`);
+          const m = Math.floor(away / 60);
+          const sec = Math.floor(away % 60);
+          const t = m > 0 ? m + ' min ' + sec + ' sec' : sec + ' secondi';
+          alert('Bentornato! 🏭\nIn ' + t + ' di assenza hai prodotto ' + fmt(gain) + ' FB.');
         }, 600);
       }
     }
   } catch(e) {
-    // Se il salvataggio è corrotto, riparte da zero senza crashare
-    s = { fb: 0, b: { printer:0, office:0, bank:0, fund:0, qe:0 }, prestige: 0 };
+    // Qualsiasi errore → riparte da default pulito
+    s = DEFAULT();
   }
-})();
+}
 
+loadSave();
 
-// ── Loop automatico — usa tempo reale (robusto su iOS) ───────
+// ── Salvataggio ──────────────────────────────────────────────
+function saveAll() {
+  s.ts = Date.now();
+  try { localStorage.setItem('fe_v1', JSON.stringify(s)); } catch(e) {}
+}
 
+// ── Interfaccia ──────────────────────────────────────────────
+function ui() {
+  s.fb = safeNum(s.fb); // autocorregge NaN prima di mostrarlo
+  document.getElementById('amt').textContent = fmt(s.fb) + ' FB';
+  document.getElementById('pps').textContent = '+' + pps().toFixed(1) + ' FB/sec';
+  IDS.forEach(id => {
+    const c = cost(id);
+    document.getElementById('o-' + id).textContent = 'Possedute: ' + safeNum(s.b[id]);
+    document.getElementById('c-' + id).textContent = fmt(c) + ' FB';
+    document.getElementById('b-' + id).disabled = s.fb < c;
+  });
+  document.title = fmt(s.fb) + ' FB — Fiat Empire';
+}
+
+// ── Click ────────────────────────────────────────────────────
+function doClick(e) {
+  s.fb = safeNum(s.fb) + 1;
+  saveAll(); ui();
+  const el = document.createElement('div');
+  el.className = 'pop';
+  el.textContent = '+1 FB';
+  el.style.cssText = 'left:' + (e.clientX - 16) + 'px;top:' + (e.clientY - 16) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 750);
+}
+
+// ── Acquisto edificio ────────────────────────────────────────
+function buy(id) {
+  const c = cost(id);
+  if (s.fb >= c) {
+    s.fb = safeNum(s.fb) - c;
+    s.b[id] = safeNum(s.b[id]) + 1;
+    saveAll(); ui();
+  }
+}
+
+// ── Loop automatico ──────────────────────────────────────────
 let lastTick = Date.now();
-
 setInterval(() => {
   const now   = Date.now();
   const delta = Math.min((now - lastTick) / 1000, 30);
   lastTick    = now;
-  const gain  = pps() * delta;
-  if (isFinite(gain) && gain >= 0) s.fb += gain;  // non aggiunge mai NaN
+  s.fb = safeNum(s.fb) + safeNum(pps() * delta);
   ui();
 }, 200);
-  
 
-// Questo è il cuore del fix: non dipendiamo più dagli eventi
-// di chiusura pagina — il timestamp viene aggiornato costantemente
+// ── Salvataggio ogni 5 secondi ───────────────────────────────
 setInterval(saveAll, 5000);
 
-
-// ── Backup con eventi pagina (funziona dove supportati) ──────
+// ── Salva alla chiusura (tutti i browser) ────────────────────
 ['beforeunload', 'pagehide', 'freeze'].forEach(ev => {
   window.addEventListener(ev, saveAll, { passive: true });
 });
@@ -284,9 +336,12 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') saveAll();
 });
 
-
-// ── Prima chiamata UI ─────────────────────────────────────────
+// ── Prima chiamata UI ────────────────────────────────────────
 ui();
-</script>  
+</script>
+
 </body>
 </html>
+
+  
+  
