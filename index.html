@@ -38,6 +38,30 @@
     }
     h1 { font-size: 1.8rem; color: #fbbf24; margin-bottom: 4px; }
     .bicon { font-size: 1.8rem; line-height: 1; margin-bottom: 4px; }
+    
+    .mandati {
+      font-size: .82rem;
+      color: #dc2626;
+      margin-top: 6px;
+      font-weight: 600;
+      min-height: 1.2em;
+    }
+    .prestige-btn {
+      display: none;
+      background: #4a1515;
+      border: 2px solid #dc2626;
+      border-radius: 10px;
+      padding: 12px 24px;
+      color: #dc2626;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 16px 0 8px;
+      width: 100%;
+      max-width: 360px;
+      transition: background .15s;
+    }
+    .prestige-btn:hover { background: #6b1e1e; }
     .sub { font-size: .85rem; color: #475569; margin-bottom: 28px; }
     .tutorial {
       font-size: .8rem;
@@ -144,7 +168,12 @@
   <div class="amount" id="amt">0 FB</div>
   <div class="cname">FiatBux</div>
   <div class="pps"   id="pps">+0.0 FB/sec</div>
+  <div class="mandati" id="mandati"></div>
 </div>
+
+<button class="prestige-btn" id="prestige-btn" onclick="doPrestige()">
+  🏛️ Stampa Globale — Azzera tutto e guadagna 1 Mandato FED
+</button>
   
 <p class="hint" id="hint">🎯 Obiettivo: raggiungi 10 FB per la prima Stampante</p>
 <button class="clickbtn" onclick="doClick(event)">💵</button>
@@ -241,8 +270,12 @@ let s = DEFAULT();
 // ── Funzioni base ────────────────────────────────────────────
 const safeNum = v => (typeof v === 'number' && isFinite(v) && v >= 0) ? v : 0;
 const cost    = id => Math.floor(B[id].base * Math.pow(B[id].mult, safeNum(s.b[id])));
-const pps     = ()  => IDS.reduce((t, id) => t + safeNum(s.b[id]) * B[id].rate, 0);
 
+const pps = () => {
+  const base = IDS.reduce((t, id) => t + safeNum(s.b[id]) * B[id].rate, 0);
+  const mult = 1 + safeNum(s.prestige) * 0.10;
+  return base * mult;
+};
 function fmt(n) {
   n = safeNum(n);
   if (n >= 1e12) return (n/1e12).toFixed(1) + 'T';
@@ -315,6 +348,18 @@ function ui() {
     document.getElementById('b-' + id).disabled = s.fb < c;
   });
   document.title = fmt(s.fb) + ' FB — Fiat Empire';
+  
+  // Mostra/nasconde pulsante Prestige e counter Mandati
+  const prestigeBtn = document.getElementById('prestige-btn');
+  const mandatiEl   = document.getElementById('mandati');
+  if (prestigeBtn) {
+    prestigeBtn.style.display = s.fb >= 1000000 ? 'block' : 'none';
+  }
+  if (mandatiEl) {
+    mandatiEl.textContent = safeNum(s.prestige) > 0
+      ? '🏛️ Mandati FED: ' + safeNum(s.prestige) + ' (+' + (safeNum(s.prestige) * 10) + '% produzione)'
+      : '';
+  }
 }
 
 // ── Click ────────────────────────────────────────────────────
@@ -340,6 +385,21 @@ function buy(id) {
   }
 }
 
+function doPrestige() {
+  if (s.fb < 1000000) return;
+  const ok = confirm(
+    'Sei sicuro?\n\nPerderai tutto ma guadagnerai 1 Mandato FED (+10% produzione permanente).\n\n' +
+    'Mandati attuali: ' + safeNum(s.prestige) +
+    ' → dopo il reset: ' + (safeNum(s.prestige) + 1)
+  );
+  if (!ok) return;
+  // Azzera tutto tranne prestige
+  s.fb = 0;
+  IDS.forEach(id => { s.b[id] = 0; });
+  s.prestige = safeNum(s.prestige) + 1;
+  saveAll();
+  ui();
+}
 // ── Loop automatico ──────────────────────────────────────────
 let lastTick = Date.now();
 setInterval(() => {
