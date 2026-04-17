@@ -5,22 +5,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Fiat Empire — Idle Game</title>
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-P3LH62CZR5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-P3LH62CZR5', {
-    cookie_domain: 'none',
-    cookie_flags: 'SameSite=None;Secure'
-  });
-</script>
-
+  <!-- Google Analytics — sostituisci G-XXXXXXXXXX con il tuo ID reale -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P3LH62CZR5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-P3LH62CZR5', {
+      cookie_domain: 'none',
+      cookie_flags: 'SameSite=None;Secure'
+    });
+  </script>
 
   <style>
-    html { height: -webkit-fill-available;
-          overflow-y: auto;
-         }
+    html { height: -webkit-fill-available; overflow-y: auto; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: #0a0a0f;
@@ -37,43 +35,13 @@
       overflow-y: auto;
     }
     h1 { font-size: 1.8rem; color: #fbbf24; margin-bottom: 4px; }
-    .bicon { font-size: 1.8rem; line-height: 1; margin-bottom: 4px; }
-    
-    .mandati {
-      font-size: .82rem;
-      color: #dc2626;
-      margin-top: 6px;
-      font-weight: 600;
-      min-height: 1.2em;
-    }
-    .prestige-btn {
-      display: none;
-      background: #4a1515;
-      border: 2px solid #dc2626;
-      border-radius: 10px;
-      padding: 12px 24px;
-      color: #dc2626;
-      font-size: .95rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin: 16px 0 8px;
-      width: 100%;
-      max-width: 360px;
-      transition: background .15s;
-    }
-    .prestige-btn:hover { background: #6b1e1e; }
-    .sub { font-size: .85rem; color: #475569; margin-bottom: 28px; }
+    .sub { font-size: .85rem; color: #475569; margin-bottom: 12px; }
     .tutorial {
       font-size: .8rem;
       color: #475569;
       margin-bottom: 20px;
       max-width: 300px;
       line-height: 1.5;
-    }
-    .hint {
-      font-size: .75rem;
-      color: #64748b;
-      margin-bottom: 8px;
     }
     .display {
       background: #1a1a2e;
@@ -85,6 +53,14 @@
     .amount { font-size: 2.4rem; font-weight: 700; color: #fbbf24; }
     .cname  { font-size: .85rem; color: #64748b; margin-top: 4px; }
     .pps    { font-size: .85rem; color: #4ade80; margin-top: 6px; }
+    .mandati {
+      font-size: .82rem;
+      color: #dc2626;
+      margin-top: 6px;
+      font-weight: 600;
+      min-height: 1.2em;
+    }
+    .hint { font-size: .75rem; color: #64748b; margin-bottom: 8px; }
     .clickbtn {
       background: #1a2e1a;
       border: 2px solid #22c55e;
@@ -100,6 +76,22 @@
       user-select: none;
     }
     .clickbtn:active { transform: scale(.91); }
+    .prestige-btn {
+      display: none;
+      background: #4a1515;
+      border: 2px solid #dc2626;
+      border-radius: 10px;
+      padding: 12px 24px;
+      color: #dc2626;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 0 0 24px;
+      width: 100%;
+      max-width: 360px;
+      transition: background .15s;
+    }
+    .prestige-btn:hover { background: #6b1e1e; }
     .upgrades { width: 100%; max-width: 360px; }
     .sect {
       font-size: .75rem;
@@ -119,6 +111,7 @@
       justify-content: space-between;
       gap: 10px;
     }
+    .bicon  { font-size: 2.6rem; line-height: 1; margin-bottom: 4px; }
     .bname  { font-size: .88rem; color: #e2e8f0; font-weight: 600; }
     .bdesc  { font-size: .75rem; color: #64748b; margin-top: 2px; }
     .bowned { font-size: .73rem; color: #475569; margin-top: 3px; }
@@ -143,25 +136,7 @@
       border-color: #334155;
       color: #475569;
     }
-    .foot { font-size: .72rem; color: #1e293b; margin-top: 28px; }
-    .pop {
-      position: fixed;
-      pointer-events: none;
-      font-size: .95rem;
-      color: #fbbf24;
-      font-weight: 700;
-      animation: up .75s ease-out forwards;
-    }
-    @keyframes up {
-      0%   { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-48px); }
-    }
-
-    .leaderboard {
-      width: 100%;
-      max-width: 360px;
-      margin-top: 28px;
-    }
+    .leaderboard { width: 100%; max-width: 360px; margin-top: 28px; }
     .lb-title {
       font-size: .78rem;
       font-weight: 700;
@@ -181,20 +156,28 @@
       margin-bottom: 6px;
       font-size: .82rem;
     }
-    .lb-rank {
-      color: #475569;
-      font-weight: 700;
-      width: 20px;
-      flex-shrink: 0;
-    }
+    .lb-rank { color: #475569; font-weight: 700; width: 20px; flex-shrink: 0; }
     .lb-rank.gold   { color: #fbbf24; }
     .lb-rank.silver { color: #94a3b8; }
     .lb-rank.bronze { color: #b45309; }
     .lb-name  { flex: 1; color: #e2e8f0; }
     .lb-score { font-size: .76rem; color: #4ade80; text-align: right; }
-    .lb-empty { font-size: .8rem; color: #475569; padding: 10px 0; }
+    .lb-empty   { font-size: .8rem; color: #475569; padding: 10px 0; }
     .lb-loading { font-size: .8rem; color: #475569; padding: 10px 0; animation: pulse 1.2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .foot { font-size: .72rem; color: #1e293b; margin-top: 28px; }
+    .pop {
+      position: fixed;
+      pointer-events: none;
+      font-size: .95rem;
+      color: #fbbf24;
+      font-weight: 700;
+      animation: up .75s ease-out forwards;
+    }
+    @keyframes up {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-48px); }
+    }
   </style>
 </head>
 <body>
@@ -203,17 +186,17 @@
 <p class="sub">Stampa. Accumula. Espandi.</p>
 <p class="tutorial">👆 Clicca il pulsante per stampare FiatBux.<br>Poi compra edifici per automatizzare la produzione.</p>
 
-  <div class="display">
+<div class="display">
   <div class="amount" id="amt">0 FB</div>
   <div class="cname">FiatBux</div>
-  <div class="pps"   id="pps">+0.0 FB/sec</div>
+  <div class="pps"    id="pps">+0.0 FB/sec</div>
   <div class="mandati" id="mandati"></div>
 </div>
 
 <button class="prestige-btn" id="prestige-btn" onclick="doPrestige()">
   🏛️ Stampa Globale — Azzera tutto e guadagna 1 Mandato FED
 </button>
-  
+
 <p class="hint" id="hint">🎯 Obiettivo: raggiungi 10 FB per la prima Stampante</p>
 <button class="clickbtn" onclick="doClick(event)">💵</button>
 
@@ -279,7 +262,6 @@
       Compra<br><span id="c-qe">100.000 FB</span>
     </button>
   </div>
-
 </div>
 
 <div class="leaderboard">
@@ -288,35 +270,27 @@
     <p class="lb-loading">Caricamento classifica...</p>
   </div>
 </div>
-  
+
 <p class="foot">Simulazione — nessuna valuta reale coinvolta.</p>
 
 <script>
-
-// ── Configurazione Supabase ──────────────────────────────
-// Sostituisci con i tuoi valori reali da Settings → API
+// ── Supabase — sostituisci con i tuoi valori reali ───────────
 const SUPA_URL = 'https://fvqoqdzeobximzptbjir.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2cW9xZHplb2J4aW16cHRiamlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NDQ0OTQsImV4cCI6MjA5MjAyMDQ5NH0.gAd6iU0A9d0jyp_EVBS4xargDDIMNbLmBaGC8JhuudA';
 
-// ── Leaderboard: leggi top 10 ────────────────────────────
+// ── Leaderboard: leggi top 10 ────────────────────────────────
 async function loadLeaderboard() {
   const el = document.getElementById('lb-list');
-  if (!el) return; // elemento non trovato → esci silenziosamente
-
-  // Timeout di 5 secondi: se Supabase non risponde, mostra errore
+  if (!el) return;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 5000);
-
   try {
     const res = await fetch(
       SUPA_URL + '/rest/v1/scores?select=username,prestige_count,total_fb' +
       '&order=prestige_count.desc,total_fb.desc&limit=10',
       {
         signal: controller.signal,
-        headers: {
-          'apikey': SUPA_KEY,
-          'Authorization': 'Bearer ' + SUPA_KEY
-        }
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
       }
     );
     clearTimeout(timer);
@@ -329,24 +303,22 @@ async function loadLeaderboard() {
     el.innerHTML = rows.map((r, i) => {
       const medals  = ['gold','silver','bronze'];
       const rankCls = i < 3 ? medals[i] : '';
-      const rankSym = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
-      return `<div class="lb-row">
-        <span class="lb-rank ${rankCls}">${rankSym}</span>
-        <span class="lb-name">${escHtml(r.username)}</span>
-        <span class="lb-score">${r.prestige_count} Mandati · ${fmt(r.total_fb)} FB</span>
-      </div>`;
+      const rankSym = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+      return '<div class="lb-row">' +
+        '<span class="lb-rank ' + rankCls + '">' + rankSym + '</span>' +
+        '<span class="lb-name">'  + escHtml(r.username) + '</span>' +
+        '<span class="lb-score">' + r.prestige_count + ' Mandati · ' + fmt(r.total_fb) + ' FB</span>' +
+        '</div>';
     }).join('');
   } catch(e) {
     clearTimeout(timer);
-    // Distingue timeout da altri errori
-    const msg = e.name === 'AbortError'
-      ? 'Classifica non raggiungibile (timeout).'
-      : 'Classifica non disponibile.';
-    el.innerHTML = `<p class="lb-empty">${msg}</p>`;
+    el.innerHTML = '<p class="lb-empty">' +
+      (e.name === 'AbortError' ? 'Classifica non raggiungibile.' : 'Classifica non disponibile.') +
+      '</p>';
   }
 }
 
-// ── Salva punteggio su Supabase ──────────────────────────
+// ── Salva punteggio su Supabase ──────────────────────────────
 async function saveScore(username) {
   try {
     await fetch(SUPA_URL + '/rest/v1/scores', {
@@ -363,20 +335,17 @@ async function saveScore(username) {
         total_fb:       Math.floor(safeNum(s.fb))
       })
     });
-  } catch(e) {
-    // Errore silenzioso: il gioco continua anche se la classifica non salva
-  }
+  } catch(e) {}
 }
 
-// ── Sanitizza input utente (sicurezza XSS) ───────────────
+// ── Sanitizza input utente ───────────────────────────────────
 function escHtml(str) {
   return String(str)
-    .replace(/&/g,'&')
-    .replace(//g,'>')
-    .replace(/"/g,'"')
-    .slice(0, 20); // max 20 caratteri per il nome
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    .slice(0, 20);
 }
-  
+
 // ── Stato di default ─────────────────────────────────────────
 const DEFAULT = () => ({
   fb: 0,
@@ -401,12 +370,11 @@ let s = DEFAULT();
 // ── Funzioni base ────────────────────────────────────────────
 const safeNum = v => (typeof v === 'number' && isFinite(v) && v >= 0) ? v : 0;
 const cost    = id => Math.floor(B[id].base * Math.pow(B[id].mult, safeNum(s.b[id])));
-
-const pps = () => {
+const pps     = ()  => {
   const base = IDS.reduce((t, id) => t + safeNum(s.b[id]) * B[id].rate, 0);
-  const mult = 1 + safeNum(s.prestige) * 0.10;
-  return base * mult;
+  return base * (1 + safeNum(s.prestige) * 0.10);
 };
+
 function fmt(n) {
   n = safeNum(n);
   if (n >= 1e12) return (n/1e12).toFixed(1) + 'T';
@@ -416,30 +384,18 @@ function fmt(n) {
   return Math.floor(n).toString();
 }
 
-// ── Caricamento UNICO dal localStorage ───────────────────────
-// Un solo punto di carico, con validazione completa.
-// Nessun altro posto nel codice legge localStorage.
+// ── Caricamento salvataggio con offline progress ─────────────
 function loadSave() {
   try {
     const raw = localStorage.getItem('fe_v1');
-    if (!raw) return;                        // nessun salvataggio → default
+    if (!raw) return;
     const d = JSON.parse(raw);
-    if (!d || typeof d !== 'object') return; // JSON corrotto → default
-
-    // Carica fb con validazione
+    if (!d || typeof d !== 'object') return;
     s.fb = safeNum(d.fb);
-
-    // Carica edifici: solo valori numerici finiti, mai undefined
     if (d.b && typeof d.b === 'object') {
-      IDS.forEach(k => {
-        s.b[k] = safeNum(d.b[k]);
-      });
+      IDS.forEach(k => { s.b[k] = safeNum(d.b[k]); });
     }
-
-    // Carica prestige
     s.prestige = safeNum(d.prestige);
-
-    // Offline progress: calcola solo se il timestamp è valido
     if (d.ts && isFinite(d.ts) && d.ts > 0) {
       const away = Math.min((Date.now() - d.ts) / 1000, 28800);
       const gain = safeNum(away * pps());
@@ -453,10 +409,7 @@ function loadSave() {
         }, 600);
       }
     }
-  } catch(e) {
-    // Qualsiasi errore → riparte da default pulito
-    s = DEFAULT();
-  }
+  } catch(e) { s = DEFAULT(); }
 }
 
 loadSave();
@@ -469,7 +422,7 @@ function saveAll() {
 
 // ── Interfaccia ──────────────────────────────────────────────
 function ui() {
-  s.fb = safeNum(s.fb); // autocorregge NaN prima di mostrarlo
+  s.fb = safeNum(s.fb);
   document.getElementById('amt').textContent = fmt(s.fb) + ' FB';
   document.getElementById('pps').textContent = '+' + pps().toFixed(1) + ' FB/sec';
   IDS.forEach(id => {
@@ -479,18 +432,12 @@ function ui() {
     document.getElementById('b-' + id).disabled = s.fb < c;
   });
   document.title = fmt(s.fb) + ' FB — Fiat Empire';
-  
-  // Mostra/nasconde pulsante Prestige e counter Mandati
-  const prestigeBtn = document.getElementById('prestige-btn');
-  const mandatiEl   = document.getElementById('mandati');
-  if (prestigeBtn) {
-    prestigeBtn.style.display = s.fb >= 1000000 ? 'block' : 'none';
-  }
-  if (mandatiEl) {
-    mandatiEl.textContent = safeNum(s.prestige) > 0
-      ? '🏛️ Mandati FED: ' + safeNum(s.prestige) + ' (+' + (safeNum(s.prestige) * 10) + '% produzione)'
-      : '';
-  }
+  const pb = document.getElementById('prestige-btn');
+  const md = document.getElementById('mandati');
+  if (pb) pb.style.display = s.fb >= 1000000 ? 'block' : 'none';
+  if (md) md.textContent = safeNum(s.prestige) > 0
+    ? '🏛️ Mandati FED: ' + safeNum(s.prestige) + ' (+' + (safeNum(s.prestige) * 10) + '% produzione)'
+    : '';
 }
 
 // ── Click ────────────────────────────────────────────────────
@@ -511,11 +458,12 @@ function buy(id) {
   if (s.fb >= c) {
     s.fb = safeNum(s.fb) - c;
     s.b[id] = safeNum(s.b[id]) + 1;
-    document.getElementById('hint')?.remove(); 
+    document.getElementById('hint')?.remove();
     saveAll(); ui();
   }
 }
 
+// ── Prestige ─────────────────────────────────────────────────
 function doPrestige() {
   if (s.fb < 1000000) return;
   const ok = confirm(
@@ -524,28 +472,18 @@ function doPrestige() {
     safeNum(s.prestige) + ' → dopo: ' + (safeNum(s.prestige) + 1)
   );
   if (!ok) return;
-
-  // Chiede il nome per la classifica
   let username = prompt(
     '🏆 Inserisci il tuo nome per la classifica Top Stampatori\n' +
-    '(max 20 caratteri — puoi saltare con Annulla):'
+    '(max 20 caratteri — Annulla per saltare):'
   );
-
-  // Salva il punteggio PRIMA di azzerare
-  if (username && username.trim().length > 0) {
-    saveScore(username.trim());
-  }
-
-  // Azzera tutto tranne prestige
+  if (username && username.trim().length > 0) saveScore(username.trim());
   s.fb = 0;
   IDS.forEach(id => { s.b[id] = 0; });
   s.prestige = safeNum(s.prestige) + 1;
-  saveAll();
-  ui();
-
-  // Aggiorna la classifica dopo 1 secondo
-  setTimeout(loadLeaderboard, 1000);
+  saveAll(); ui();
+  setTimeout(loadLeaderboard, 1500);
 }
+
 // ── Loop automatico ──────────────────────────────────────────
 let lastTick = Date.now();
 setInterval(() => {
@@ -556,10 +494,10 @@ setInterval(() => {
   ui();
 }, 200);
 
-// ── Salvataggio ogni 5 secondi ───────────────────────────────
+// ── Salvataggio periodico ────────────────────────────────────
 setInterval(saveAll, 5000);
 
-// ── Salva alla chiusura (tutti i browser) ────────────────────
+// ── Salva alla chiusura ──────────────────────────────────────
 ['beforeunload', 'pagehide', 'freeze'].forEach(ev => {
   window.addEventListener(ev, saveAll, { passive: true });
 });
@@ -567,13 +505,10 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') saveAll();
 });
 
-// ── Prima chiamata UI ────────────────────────────────────────
+// ── Avvio ────────────────────────────────────────────────────
 ui();
-loadLeaderboard(); // carica classifica all'avvio
+loadLeaderboard();
 </script>
 
 </body>
 </html>
-
-  
-  
