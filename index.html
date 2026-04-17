@@ -156,6 +156,45 @@
       0%   { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-48px); }
     }
+
+    .leaderboard {
+      width: 100%;
+      max-width: 360px;
+      margin-top: 28px;
+    }
+    .lb-title {
+      font-size: .78rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 10px;
+    }
+    .lb-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1a1a2e;
+      border: 1px solid #2d2d4e;
+      border-radius: 8px;
+      padding: 9px 12px;
+      margin-bottom: 6px;
+      font-size: .82rem;
+    }
+    .lb-rank {
+      color: #475569;
+      font-weight: 700;
+      width: 20px;
+      flex-shrink: 0;
+    }
+    .lb-rank.gold   { color: #fbbf24; }
+    .lb-rank.silver { color: #94a3b8; }
+    .lb-rank.bronze { color: #b45309; }
+    .lb-name  { flex: 1; color: #e2e8f0; }
+    .lb-score { font-size: .76rem; color: #4ade80; text-align: right; }
+    .lb-empty { font-size: .8rem; color: #475569; padding: 10px 0; }
+    .lb-loading { font-size: .8rem; color: #475569; padding: 10px 0; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   </style>
 </head>
 <body>
@@ -243,9 +282,83 @@
 
 </div>
 
+<div class="leaderboard">
+  <p class="lb-title">🏆 Top Stampatori</p>
+  <div id="lb-list">
+    <p class="lb-loading">Caricamento classifica...</p>
+  </div>
+</div>
+  
 <p class="foot">Simulazione — nessuna valuta reale coinvolta.</p>
 
 <script>
+
+// ── Configurazione Supabase ──────────────────────────────
+// Sostituisci con i tuoi valori reali da Settings → API
+const SUPA_URL = 'https://fvqoqdzeobximzptbjir.supabase.co';
+const SUPA_KEY = 'sb_publishable_rqc_t_KZf8i4ae0tHgT3oA_NrTvNOg0';
+
+// ── Leaderboard: leggi top 10 ────────────────────────────
+async function loadLeaderboard() {
+  const el = document.getElementById('lb-list');
+  try {
+    const res = await fetch(
+      SUPA_URL + '/rest/v1/scores?select=username,prestige_count,total_fb' +
+      '&order=prestige_count.desc,total_fb.desc&limit=10',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const rows = await res.json();
+    if (!rows.length) {
+      el.innerHTML = '<p class="lb-empty">Nessun punteggio ancora. Sii il primo!</p>';
+      return;
+    }
+    el.innerHTML = rows.map((r, i) => {
+      const medals = ['gold','silver','bronze'];
+      const rankClass = i < 3 ? medals[i] : '';
+      const rankSymbol = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
+      return `<div class="lb-row">
+        <span class="lb-rank ${rankClass}">${rankSymbol}</span>
+        <span class="lb-name">${escHtml(r.username)}</span>
+        <span class="lb-score">${r.prestige_count} Mandati · ${fmt(r.total_fb)} FB</span>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<p class="lb-empty">Classifica non disponibile.</p>';
+  }
+}
+
+// ── Salva punteggio su Supabase ──────────────────────────
+async function saveScore(username) {
+  try {
+    await fetch(SUPA_URL + '/rest/v1/scores', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        username:       username,
+        prestige_count: safeNum(s.prestige),
+        total_fb:       Math.floor(safeNum(s.fb))
+      })
+    });
+  } catch(e) {
+    // Errore silenzioso: il gioco continua anche se la classifica non salva
+  }
+}
+
+// ── Sanitizza input utente (sicurezza XSS) ───────────────
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&')
+    .replace(//g,'>')
+    .replace(/"/g,'"')
+    .slice(0, 20); // max 20 caratteri per il nome
+}
+  
 // ── Stato di default ─────────────────────────────────────────
 const DEFAULT = () => ({
   fb: 0,
@@ -388,17 +501,32 @@ function buy(id) {
 function doPrestige() {
   if (s.fb < 1000000) return;
   const ok = confirm(
-    'Sei sicuro?\n\nPerderai tutto ma guadagnerai 1 Mandato FED (+10% produzione permanente).\n\n' +
-    'Mandati attuali: ' + safeNum(s.prestige) +
-    ' → dopo il reset: ' + (safeNum(s.prestige) + 1)
+    'Sei sicuro?\n\nPerderai tutto ma guadagnerai 1 Mandato FED ' +
+    '(+10% produzione permanente).\n\nMandati attuali: ' +
+    safeNum(s.prestige) + ' → dopo: ' + (safeNum(s.prestige) + 1)
   );
   if (!ok) return;
+
+  // Chiede il nome per la classifica
+  let username = prompt(
+    '🏆 Inserisci il tuo nome per la classifica Top Stampatori\n' +
+    '(max 20 caratteri — puoi saltare con Annulla):'
+  );
+
+  // Salva il punteggio PRIMA di azzerare
+  if (username && username.trim().length > 0) {
+    saveScore(username.trim());
+  }
+
   // Azzera tutto tranne prestige
   s.fb = 0;
   IDS.forEach(id => { s.b[id] = 0; });
   s.prestige = safeNum(s.prestige) + 1;
   saveAll();
   ui();
+
+  // Aggiorna la classifica dopo 1 secondo
+  setTimeout(loadLeaderboard, 1000);
 }
 // ── Loop automatico ──────────────────────────────────────────
 let lastTick = Date.now();
@@ -423,6 +551,7 @@ document.addEventListener('visibilitychange', () => {
 
 // ── Prima chiamata UI ────────────────────────────────────────
 ui();
+loadLeaderboard(); // carica classifica all'avvio
 </script>
 
 </body>
