@@ -296,17 +296,30 @@
 // ── Configurazione Supabase ──────────────────────────────
 // Sostituisci con i tuoi valori reali da Settings → API
 const SUPA_URL = 'https://fvqoqdzeobximzptbjir.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2cW9xZHplb2J4aW16cHRiamlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NDQ0OTQsImV4cCI6MjA5MjAyMDQ5NH0.gAd6iU0A9d0jyp_EVBS4xargDDIMNbLmBaGC8JhuudA';
+const SUPA_KEY = 'sb_publishable_rqc_t_KZf8i4ae0tHgT3oA_NrTvNOg0';
 
 // ── Leaderboard: leggi top 10 ────────────────────────────
 async function loadLeaderboard() {
   const el = document.getElementById('lb-list');
+  if (!el) return; // elemento non trovato → esci silenziosamente
+
+  // Timeout di 5 secondi: se Supabase non risponde, mostra errore
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+
   try {
     const res = await fetch(
       SUPA_URL + '/rest/v1/scores?select=username,prestige_count,total_fb' +
       '&order=prestige_count.desc,total_fb.desc&limit=10',
-      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+      {
+        signal: controller.signal,
+        headers: {
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + SUPA_KEY
+        }
+      }
     );
+    clearTimeout(timer);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const rows = await res.json();
     if (!rows.length) {
@@ -314,17 +327,22 @@ async function loadLeaderboard() {
       return;
     }
     el.innerHTML = rows.map((r, i) => {
-      const medals = ['gold','silver','bronze'];
-      const rankClass = i < 3 ? medals[i] : '';
-      const rankSymbol = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
+      const medals  = ['gold','silver','bronze'];
+      const rankCls = i < 3 ? medals[i] : '';
+      const rankSym = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
       return `<div class="lb-row">
-        <span class="lb-rank ${rankClass}">${rankSymbol}</span>
+        <span class="lb-rank ${rankCls}">${rankSym}</span>
         <span class="lb-name">${escHtml(r.username)}</span>
         <span class="lb-score">${r.prestige_count} Mandati · ${fmt(r.total_fb)} FB</span>
       </div>`;
     }).join('');
   } catch(e) {
-    el.innerHTML = '<p class="lb-empty">Classifica non disponibile.</p>';
+    clearTimeout(timer);
+    // Distingue timeout da altri errori
+    const msg = e.name === 'AbortError'
+      ? 'Classifica non raggiungibile (timeout).'
+      : 'Classifica non disponibile.';
+    el.innerHTML = `<p class="lb-empty">${msg}</p>`;
   }
 }
 
