@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!-- G-P3LH62CZR5         -->
+<!-- https://fvqoqdzeobximzptbjir.supabase.co        -->
+<!-- eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2cW9xZHplb2J4aW16cHRiamlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NDQ0OTQsImV4cCI6MjA5MjAyMDQ5NH0.gAd6iU0A9d0jyp_EVBS4xargDDIMNbLmBaGC8JhuudA        -->
+
 <html lang="it">
 <head>
   <meta charset="UTF-8">
@@ -18,7 +22,7 @@
   </script>
 
   <style>
-    html { height: -webkit-fill-available; overflow-y: auto; }
+    html { overflow-y: auto; height: -webkit-fill-available; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: #0a0a0f;
@@ -26,14 +30,51 @@
       font-family: 'Segoe UI', sans-serif;
       min-height: 100vh;
       min-height: -webkit-fill-available;
+      overflow-y: auto;
+    }
+
+    /* ═══════════════════════════════════════
+       LAYOUT DESKTOP — 3 colonne
+       grid: col-sx | div | col-cx | div | col-dx
+    ═══════════════════════════════════════ */
+    .game-layout {
+      display: grid;
+      grid-template-columns: 1fr 48px 1fr 48px 1fr;
+      grid-template-rows: auto;
+      min-height: 100vh;
+      align-items: start;
+    }
+
+    /* Colonna divisore — banconote impilate */
+    .divider {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 40px 24px 48px;
-      text-align: center;
-      overflow-y: auto;
+      font-size: 1.9rem;
+      line-height: 1;
+      min-height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      padding: 2px 0;
+      background: #0a0a0f;
     }
+
+    /* Colonne contenuto */
+    .col-left  { padding: 32px 16px 40px; display: flex; flex-direction: column; align-items: center; }
+    .col-right { padding: 32px 16px 40px; display: flex; flex-direction: column; align-items: stretch; }
+    .col-center {
+      padding: 32px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════
+       STILI ELEMENTI — identici alla versione precedente
+    ═══════════════════════════════════════ */
     h1 { font-size: 1.8rem; color: #fbbf24; margin-bottom: 4px; }
     .sub { font-size: .85rem; color: #475569; margin-bottom: 12px; }
     .tutorial {
@@ -47,8 +88,10 @@
       background: #1a1a2e;
       border: 1px solid #2d2d4e;
       border-radius: 16px;
-      padding: 24px 40px;
-      margin-bottom: 24px;
+      padding: 24px 32px;
+      margin-bottom: 16px;
+      width: 100%;
+      max-width: 340px;
     }
     .amount { font-size: 2.4rem; font-weight: 700; color: #fbbf24; }
     .cname  { font-size: .85rem; color: #64748b; margin-top: 4px; }
@@ -61,6 +104,22 @@
       min-height: 1.2em;
     }
     .hint { font-size: .75rem; color: #64748b; margin-bottom: 8px; }
+    .prestige-btn {
+      display: none;
+      background: #4a1515;
+      border: 2px solid #dc2626;
+      border-radius: 10px;
+      padding: 12px 20px;
+      color: #dc2626;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 16px;
+      width: 100%;
+      max-width: 340px;
+      transition: background .15s;
+    }
+    .prestige-btn:hover { background: #6b1e1e; }
     .clickbtn {
       background: #1a2e1a;
       border: 2px solid #22c55e;
@@ -69,37 +128,22 @@
       height: 110px;
       font-size: 2.4rem;
       cursor: pointer;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
       transition: transform .08s;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
     .clickbtn:active { transform: scale(.91); }
-    .prestige-btn {
-      display: none;
-      background: #4a1515;
-      border: 2px solid #dc2626;
-      border-radius: 10px;
-      padding: 12px 24px;
-      color: #dc2626;
-      font-size: .95rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin: 0 0 24px;
-      width: 100%;
-      max-width: 360px;
-      transition: background .15s;
-    }
-    .prestige-btn:hover { background: #6b1e1e; }
-    .upgrades { width: 100%; max-width: 360px; }
     .sect {
       font-size: .75rem;
       color: #475569;
       text-transform: uppercase;
       letter-spacing: .1em;
-      margin-bottom: 10px;
+      margin-bottom: 4px;
     }
+
+    /* Cards edifici */
     .card {
       background: #1a1a2e;
       border: 1px solid #2d2d4e;
@@ -136,7 +180,8 @@
       border-color: #334155;
       color: #475569;
     }
-    .leaderboard { width: 100%; max-width: 360px; margin-top: 28px; }
+
+    /* Leaderboard */
     .lb-title {
       font-size: .78rem;
       font-weight: 700;
@@ -144,7 +189,10 @@
       text-transform: uppercase;
       letter-spacing: .08em;
       margin-bottom: 10px;
+      text-align: center;
+      width: 100%;
     }
+    #lb-list { width: 100%; }
     .lb-row {
       display: flex;
       align-items: center;
@@ -162,118 +210,162 @@
     .lb-rank.bronze { color: #b45309; }
     .lb-name  { flex: 1; color: #e2e8f0; }
     .lb-score { font-size: .76rem; color: #4ade80; text-align: right; }
-    .lb-empty   { font-size: .8rem; color: #475569; padding: 10px 0; }
-    .lb-loading { font-size: .8rem; color: #475569; padding: 10px 0; animation: pulse 1.2s infinite; }
+    .lb-empty   { font-size: .8rem; color: #475569; padding: 10px 0; text-align: center; }
+    .lb-loading { font-size: .8rem; color: #475569; padding: 10px 0; text-align: center; animation: pulse 1.2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-    .foot { font-size: .72rem; color: #1e293b; margin-top: 28px; }
+
+    .foot { font-size: .72rem; color: #1e293b; margin-top: 24px; text-align: center; }
+
     .pop {
       position: fixed;
       pointer-events: none;
       font-size: .95rem;
       color: #fbbf24;
       font-weight: 700;
-      animation: up .75s ease-out forwards;
+      animation: popUp .75s ease-out forwards;
     }
-    @keyframes up {
+    @keyframes popUp {
       0%   { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-48px); }
+    }
+
+    /* ═══════════════════════════════════════
+       LAYOUT MOBILE — colonne impilate
+    ═══════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .game-layout {
+        display: flex;
+        flex-direction: column;
+      }
+      .divider { display: none; }
+      .col-center { order: 1; padding: 28px 16px 20px; }
+      .col-right  { order: 2; padding: 8px 16px 20px; }
+      .col-left   { order: 3; padding: 8px 16px 40px; }
+      .display { padding: 20px 24px; }
     }
   </style>
 </head>
 <body>
 
-<h1>💵 Fiat Empire</h1>
-<p class="sub">Stampa. Accumula. Espandi.</p>
-<p class="tutorial">👆 Clicca il pulsante per stampare FiatBux.<br>Poi compra edifici per automatizzare la produzione.</p>
+<div class="game-layout">
 
-<div class="display">
-  <div class="amount" id="amt">0 FB</div>
-  <div class="cname">FiatBux</div>
-  <div class="pps"    id="pps">+0.0 FB/sec</div>
-  <div class="mandati" id="mandati"></div>
-</div>
-
-<button class="prestige-btn" id="prestige-btn" onclick="doPrestige()">
-  🏛️ Stampa Globale — Azzera tutto e guadagna 1 Mandato FED
-</button>
-
-<p class="hint" id="hint">🎯 Obiettivo: raggiungi 10 FB per la prima Stampante</p>
-<button class="clickbtn" onclick="doClick(event)">💵</button>
-
-<div class="upgrades">
-  <p class="sect">Espandi il tuo impero</p>
-
-  <div class="card">
-    <div>
-      <div class="bicon">🖨️</div>
-      <div class="bname">Stampante Domestica</div>
-      <div class="bdesc">+0.1 FB/sec</div>
-      <div class="bowned" id="o-printer">Possedute: 0</div>
+  <!-- ═══ COLONNA SINISTRA — Classifica ═══ -->
+  <div class="col-left">
+    <p class="lb-title">🏆 Top Stampatori</p>
+    <div id="lb-list">
+      <p class="lb-loading">Caricamento classifica...</p>
     </div>
-    <button class="buybtn" id="b-printer" onclick="buy('printer')">
-      Compra<br><span id="c-printer">10 FB</span>
-    </button>
   </div>
 
-  <div class="card">
-    <div>
-      <div class="bicon">🏢</div>
-      <div class="bname">Ufficio Stampa</div>
-      <div class="bdesc">+1 FB/sec</div>
-      <div class="bowned" id="o-office">Possedute: 0</div>
+  <!-- ═══ DIVISORE SINISTRO — banconote verticali ═══ -->
+  <div class="divider" id="div-left"></div>
+
+  <!-- ═══ COLONNA CENTRALE — controlli gioco ═══ -->
+  <div class="col-center">
+    <h1>💵 Fiat Empire</h1>
+    <p class="sub">Stampa. Accumula. Espandi.</p>
+    <p class="tutorial">👆 Clicca il pulsante per stampare FiatBux.<br>Poi compra edifici per automatizzare la produzione.</p>
+
+    <div class="display">
+      <div class="amount" id="amt">0 FB</div>
+      <div class="cname">FiatBux</div>
+      <div class="pps" id="pps">+0.0 FB/sec</div>
+      <div class="mandati" id="mandati"></div>
     </div>
-    <button class="buybtn" id="b-office" onclick="buy('office')">
-      Compra<br><span id="c-office">100 FB</span>
+
+    <button class="prestige-btn" id="prestige-btn" onclick="doPrestige()">
+      🏛️ Stampa Globale — Azzera tutto e guadagna 1 Mandato FED
     </button>
+
+    <p class="hint" id="hint">🎯 Obiettivo: raggiungi 10 FB per la prima Stampante</p>
+    <button class="clickbtn" onclick="doClick(event)">💵</button>
+    <p class="sect">Espandi il tuo impero</p>
+    <p class="foot">Simulazione — nessuna valuta reale coinvolta.</p>
   </div>
 
-  <div class="card">
-    <div>
-      <div class="bicon">🏦</div>
-      <div class="bname">Banca Centrale</div>
-      <div class="bdesc">+10 FB/sec</div>
-      <div class="bowned" id="o-bank">Possedute: 0</div>
+  <!-- ═══ DIVISORE DESTRO — banconote verticali ═══ -->
+  <div class="divider" id="div-right"></div>
+
+  <!-- ═══ COLONNA DESTRA — Edifici ═══ -->
+  <div class="col-right">
+
+    <div class="card">
+      <div>
+        <div class="bicon">🖨️</div>
+        <div class="bname">Stampante Domestica</div>
+        <div class="bdesc">+0.1 FB/sec</div>
+        <div class="bowned" id="o-printer">Possedute: 0</div>
+      </div>
+      <button class="buybtn" id="b-printer" onclick="buy('printer')">
+        Compra<br><span id="c-printer">10 FB</span>
+      </button>
     </div>
-    <button class="buybtn" id="b-bank" onclick="buy('bank')">
-      Compra<br><span id="c-bank">1.000 FB</span>
-    </button>
-  </div>
 
-  <div class="card">
-    <div>
-      <div class="bicon">🌐</div>
-      <div class="bname">Fondo Globale</div>
-      <div class="bdesc">+100 FB/sec</div>
-      <div class="bowned" id="o-fund">Possedute: 0</div>
+    <div class="card">
+      <div>
+        <div class="bicon">🏢</div>
+        <div class="bname">Ufficio Stampa</div>
+        <div class="bdesc">+1 FB/sec</div>
+        <div class="bowned" id="o-office">Possedute: 0</div>
+      </div>
+      <button class="buybtn" id="b-office" onclick="buy('office')">
+        Compra<br><span id="c-office">100 FB</span>
+      </button>
     </div>
-    <button class="buybtn" id="b-fund" onclick="buy('fund')">
-      Compra<br><span id="c-fund">10.000 FB</span>
-    </button>
-  </div>
 
-  <div class="card">
-    <div>
-      <div class="bicon">🛸</div>
-      <div class="bname">Quantitative Easing</div>
-      <div class="bdesc">+1.000 FB/sec</div>
-      <div class="bowned" id="o-qe">Possedute: 0</div>
+    <div class="card">
+      <div>
+        <div class="bicon">🏦</div>
+        <div class="bname">Banca Centrale</div>
+        <div class="bdesc">+10 FB/sec</div>
+        <div class="bowned" id="o-bank">Possedute: 0</div>
+      </div>
+      <button class="buybtn" id="b-bank" onclick="buy('bank')">
+        Compra<br><span id="c-bank">1.000 FB</span>
+      </button>
     </div>
-    <button class="buybtn" id="b-qe" onclick="buy('qe')">
-      Compra<br><span id="c-qe">100.000 FB</span>
-    </button>
-  </div>
-</div>
 
-<div class="leaderboard">
-  <p class="lb-title">🏆 Top Stampatori</p>
-  <div id="lb-list">
-    <p class="lb-loading">Caricamento classifica...</p>
-  </div>
-</div>
+    <div class="card">
+      <div>
+        <div class="bicon">🌐</div>
+        <div class="bname">Fondo Globale</div>
+        <div class="bdesc">+100 FB/sec</div>
+        <div class="bowned" id="o-fund">Possedute: 0</div>
+      </div>
+      <button class="buybtn" id="b-fund" onclick="buy('fund')">
+        Compra<br><span id="c-fund">10.000 FB</span>
+      </button>
+    </div>
 
-<p class="foot">Simulazione — nessuna valuta reale coinvolta.</p>
+    <div class="card">
+      <div>
+        <div class="bicon">🛸</div>
+        <div class="bname">Quantitative Easing</div>
+        <div class="bdesc">+1.000 FB/sec</div>
+        <div class="bowned" id="o-qe">Possedute: 0</div>
+      </div>
+      <button class="buybtn" id="b-qe" onclick="buy('qe')">
+        Compra<br><span id="c-qe">100.000 FB</span>
+      </button>
+    </div>
+
+  </div><!-- fine col-right -->
+
+</div><!-- fine game-layout -->
 
 <script>
+// ── Riempi divisori con banconote verticali ───────────────────
+function fillDividers() {
+  const count = Math.ceil(window.innerHeight / 30) + 4;
+  const content = Array(count).fill('💵').join('\n');
+  ['div-left', 'div-right'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = content;
+  });
+}
+fillDividers();
+window.addEventListener('resize', fillDividers);
+
 // ── Supabase — sostituisci con i tuoi valori reali ───────────
 const SUPA_URL = 'https://fvqoqdzeobximzptbjir.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2cW9xZHplb2J4aW16cHRiamlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NDQ0OTQsImV4cCI6MjA5MjAyMDQ5NH0.gAd6iU0A9d0jyp_EVBS4xargDDIMNbLmBaGC8JhuudA';
@@ -384,7 +476,7 @@ function fmt(n) {
   return Math.floor(n).toString();
 }
 
-// ── Caricamento salvataggio con offline progress ─────────────
+// ── Caricamento con offline progress ─────────────────────────
 function loadSave() {
   try {
     const raw = localStorage.getItem('fe_v1');
@@ -402,9 +494,9 @@ function loadSave() {
       if (gain > 0.5) {
         s.fb += gain;
         setTimeout(() => {
-          const m = Math.floor(away / 60);
+          const m   = Math.floor(away / 60);
           const sec = Math.floor(away % 60);
-          const t = m > 0 ? m + ' min ' + sec + ' sec' : sec + ' secondi';
+          const t   = m > 0 ? m + ' min ' + sec + ' sec' : sec + ' secondi';
           alert('Bentornato! 🏭\nIn ' + t + ' di assenza hai prodotto ' + fmt(gain) + ' FB.');
         }, 600);
       }
